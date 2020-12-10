@@ -9,10 +9,14 @@ set -meo pipefail
 
 usage() { echo "Usage: $0 [-o <ccs-scale-bat>] [-s <sandbox|development|INT>] <apply|destroy> <svcs|apps|all>" 1>&2; exit 1; }
 
+get_environment_property () {
+  cat ${PROPERTY_FILE} | grep -w "$1" | cut -d'=' -f2
+}
+
 while getopts ":o:s:" o; do
     case "${o}" in
         o)
-            ORG=${OPTARG}
+            ORG=${OPTARG:='ccs-scale-bat'}
             ;;
         s)
             SPACE=${OPTARG}
@@ -25,22 +29,24 @@ done
 shift $((OPTIND-1))
 
 # Check null/empty options and args
-if [ -z "${ORG}" ] || [ -z "${SPACE}" || [ -z "$1" ] || [ -z "$2" ]; then
+if [ -z "${ORG}" ] || [ -z "${SPACE}" ] || [ -z "$1" ] || [ -z "$2" ]; then
     usage
 fi
 
-# Validate args
-# TODO: Org = ccs-scale-bat, space = sandbox etc, action=<apply|destroy> scope=<svcs|apps|all>
+ACTION=$1
+SCOPE=$2
+PROPERTY_FILE="./space/${SPACE}.properties"
 
-echo "ORG=${ORG}"
-echo "SPACE=${SPACE}"
-echo "ACTION=${1}"
-echo "SCOPE=${2}"
+if [[ ! -f $PROPERTY_FILE ]]; then
+  echo "Space (env) config file [$PROPERTY_FILE] not found"
+  exit 1;
+fi
 
-export PROPERTY_FILE="./space/${SPACE}.properties"
-
-get_environment_property () {
-  cat ${PROPERTY_FILE} | grep -w "$1" | cut -d'=' -f2
-}
-
-echo $(get_environment_property "instance_count")
+if [[ $ACTION = "apply" ]]; then
+  . ./scripts/apply.sh
+elif [[ $ACTION = "destroy" ]]; then
+  . ./scripts/destroy.sh
+else
+  echo "Unrecognised action [$ACTION]. Only 'apply or 'destroy' are valid."
+  usage
+fi
