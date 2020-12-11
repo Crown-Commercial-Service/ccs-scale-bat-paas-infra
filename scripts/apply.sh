@@ -4,18 +4,18 @@
 #
 
 echo "ORG=${ORG}"
-echo "SPACE=${SPACE}"
+echo "ENV=${ENV}"
 echo "ACTION=${ACTION}"
 echo "SCOPE=${SCOPE}"
 
-cf target -o $ORG -s $SPACE
+cf target -o $ORG -s $(get_environment_property "SPACE")
 
+# Create / update backing services
 if [[ $SCOPE =~ svcs|all ]]; then
-  echo "applying svcs.."
+  . ./scripts/create-services.sh
 fi
 
+# Create / update applications
 if [[ $SCOPE =~ app|all ]]; then
-  echo "applying apps.."
+    . ./scripts/create-apps.sh
 fi
-
-echo $(get_environment_property "instance_count")
