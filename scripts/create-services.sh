@@ -1,48 +1,31 @@
-#!/bin/bash -e
-
-#cf marketplace -s postgres
-REDIS_PLAN=tiny-5.x
-PG_PLAN=tiny-unencrypted-9.5
-# actual plan (paid) for DEV/INT should be: PG_PLAN=medium-ha-11
-ES_PLAN=tiny-7.x 
-
-ENV=sb
-
-# Note: names to be decided - maybe we need to check with TechOps
-# Note: 'scale', 'bat', 'env' seem a bit redundant in names, but may be helpful under certain circumstance - to discuss
-PG_SERVICE_NAME=scale-bat-pg-$ENV-service
-ES_SERVICE_NAME=scale-bat-es-$ENV-service
-REDIS_SERVICE_NAME=scale-bat-redis-$ENV-service
-# Note: S3 buckets reflect current names - suggest changing these
-S3_CNET_SERVICE_NAME=cnet-spree-$ENV-staging
-S3_FEED_SERVICE_NAME=feed-spree-$ENV-staging
-S3_IMAGES_SERVICE_NAME=spree-$ENV-staging
-S3_PRODUCTS_SERVICE_NAME=spree-$ENV-products-import
+#!/bin/bash
 
 ##################
 # Postgres Service
 ##################
-cf create-service postgres $PG_PLAN $PG_SERVICE_NAME
+cf create-service postgres $SERVICE_PLAN_PG $(resolve_env_property ${SERVICE_NAME_PG})
 
 #######################
 # Elasticsearch Service
 #######################
-cf create-service elasticsearch $ES_PLAN $ES_SERVICE_NAME
+cf create-service elasticsearch $SERVICE_PLAN_ES $(resolve_env_property ${SERVICE_NAME_ES})
 
 ###############
-# Redis Service
+# Redis Services (frontend cache / sidekiq)
 ###############
-cf create-service redis $REDIS_PLAN $REDIS_SERVICE_NAME
+cf create-service redis $SERVICE_PLAN_REDIS_CACHE $(resolve_env_property ${SERVICE_NAME_REDIS_CACHE})
+cf create-service redis $SERVICE_PLAN_REDIS_SIDEKIQ $(resolve_env_property ${SERVICE_NAME_REDIS_SIDEKIQ})
 
 ###################
 # Memcached Service
 ###################
-# TBD -https://docs.cloud.service.gov.uk/deploying_services/user_provided_services/#user-provided-backing-services? 
+# TBD -https://docs.cloud.service.gov.uk/deploying_services/user_provided_services/#user-provided-backing-services?
 
 #############
 # S3 Services
 #############
-cf create-service aws-s3-bucket default $S3_CNET_SERVICE_NAME
-cf create-service aws-s3-bucket default $S3_FEED_SERVICE_NAME
-cf create-service aws-s3-bucket default $S3_IMAGES_SERVICE_NAME
-cf create-service aws-s3-bucket default $S3_PRODUCTS_SERVICE_NAME
+cf create-service aws-s3-bucket default $(resolve_env_property $SERVICE_NAME_S3_SPREE_CONFIG)
+cf create-service aws-s3-bucket default $(resolve_env_property $SERVICE_NAME_S3_SPREE_IMAGES)
+cf create-service aws-s3-bucket default $(resolve_env_property $SERVICE_NAME_S3_SPREE_CNET)
+cf create-service aws-s3-bucket default $(resolve_env_property $SERVICE_NAME_S3_SPREE_FEED)
+cf create-service aws-s3-bucket default $(resolve_env_property $SERVICE_NAME_S3_SPREE_PRODUCTS)

@@ -13,6 +13,10 @@ get_environment_property () {
   cat ${ENV_PROPS} | grep -w "$1" | cut -d'=' -f2
 }
 
+resolve_env_property () {
+  echo $(eval echo "$1")
+}
+
 while getopts ":o:e:" o; do
     case "${o}" in
         o)
