@@ -33,9 +33,9 @@ cf create-service aws-s3-bucket default $(resolve_env_property $SERVICE_NAME_S3_
 # Encapsulates external service details including credentials. Prompts for user input.
 #############
 create_update_ups () {
-  $UPS_NAME=$1
-  $UPS_LABEL=$2
-  $UPS_PROPS=$3
+  UPS_NAME=$1
+  UPS_LABEL=$2
+  UPS_PROPS=$3
 
   if cf service resolve_env_property $UPS_NAME &> /dev/null; then
     echo "Update $UPS_LABEL service details as prompted:"
@@ -50,25 +50,25 @@ if [[ $PROVISION_UPS ]]; then
   NR_UPS_NAME=$(resolve_env_property $UPS_NAME_NEWRELIC)
   NR_UPS_LABEL="New Relic"
   NR_PROPS="appname, license-key, enabled"
-  create_update_ups $NR_UPS_NAME $NR_UPS_LABEL $NR_PROPS
+  create_update_ups "${NR_UPS_NAME}" "${NR_UPS_LABEL}" "${NR_PROPS}"
 
   RB_UPS_NAME=$(resolve_env_property $UPS_NAME_ROLLBAR)
   RB_UPS_LABEL="Rollbar"
   RB_PROPS="access-token, env"
-  create_update_ups $RB_UPS_NAME $RB_UPS_LABEL $RB_PROPS
+  create_update_ups "$RB_UPS_NAME" "$RB_UPS_LABEL" "$RB_PROPS"
 
   LGT_UPS_NAME=$(resolve_env_property $UPS_NAME_LOGITIO)
   LGT_UPS_LABEL="Logit.io"
   LGT_PROPS="host, port"
-  create_update_ups $LGT_UPS_NAME $LGT_UPS_LABEL $LGT_PROPS
+  create_update_ups "$LGT_UPS_NAME" "$LGT_UPS_LABEL" "$LGT_PROPS"
 
   SGRD_UPS_NAME=$(resolve_env_property $UPS_NAME_SENDGRID)
   SGRD_UPS_LABEL="Sendgrid"
   SGRD_PROPS="username, password"
-  create_update_ups $SGRD_UPS_NAME $SGRD_UPS_LABEL $SGRD_PROPS
+  create_update_ups "$SGRD_UPS_NAME" "$SGRD_UPS_LABEL" "$SGRD_PROPS"
 
   GNRL_UPS_NAME=$(resolve_env_property $UPS_NAME_GENERAL)
   GNRL_UPS_LABEL="generic Spree/Sidekiq"
   GNRL_PROPS="basicauth-username, basicauth-password, secret-key-base, sidekiq-username, sidekiq_password"
-  create_update_ups $GNRL_UPS_NAME $GNRL_UPS_LABEL $GNRL_PROPS
+  create_update_ups "$GNRL_UPS_NAME" "$GNRL_UPS_LABEL" "$GNRL_PROPS"
 fi
