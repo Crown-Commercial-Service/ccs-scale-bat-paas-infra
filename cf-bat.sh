@@ -13,7 +13,7 @@ get_environment_property () {
   cat ${ENV_PROPS} | grep -w "$1" | cut -d'=' -f2
 }
 
-resolve_env_property () {
+expand_var () {
   echo $(eval echo "$1")
 }
 
