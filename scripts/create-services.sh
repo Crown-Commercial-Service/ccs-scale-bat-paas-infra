@@ -74,4 +74,15 @@ if [[ $PROVISION_UPS ]]; then
   GNRL_UPS_LABEL="generic Spree/Sidekiq"
   GNRL_PROPS="basicauth-username, basicauth-password, secret-key-base, sidekiq-username, sidekiq-password"
   create_update_ups "$GNRL_UPS_NAME" "$GNRL_UPS_LABEL" "$GNRL_PROPS"
+
+  # Client specific
+  GNRL_CLIENT_UPS_NAME=$(expand_var $UPS_NAME_GENERAL_CLIENT)
+  GNRL_CLIENT_UPS_LABEL="generic BaT Client UI"
+  GNRL_CLIENT_PROPS="basicauth-username, basicauth-password, session-cookie-secret"
+  create_update_ups "$GNRL_CLIENT_UPS_NAME" "$GNRL_CLIENT_UPS_LABEL" "$GNRL_CLIENT_PROPS"
+
+  PAPERTRAIL_UPS_NAME=$(expand_var $UPS_NAME_PAPERTRAIL)
+  PAPERTRAIL_UPS_LABEL="Papertrail"
+  PAPERTRAIL_PROPS="host, port"
+  create_update_ups "$PAPERTRAIL_UPS_NAME" "$PAPERTRAIL_UPS_LABEL" "$PAPERTRAIL_PROPS"
 fi

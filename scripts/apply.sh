@@ -27,6 +27,19 @@ fi
 
 # Create / update applications
 if [[ $SCOPE =~ app|all ]]; then
-  . ./scripts/create-spree-apps.sh
-  # . ./scripts/create-bat-client-app.sh
+  export CF_DOCKER_PASSWORD=$AWS_ECR_REPO_SECRET_ACCESS_KEY
+
+  # Spree UI / service
+  APP_NAME=$(expand_var $APP_NAME_SPREE_UI)
+  SIDEKIQ=false
+  # . ./scripts/create-spree-app.sh
+
+  # Spree Sidekiq
+  APP_NAME=$(expand_var $APP_NAME_SPREE_SIDEKIQ)
+  SIDEKIQ=true
+  # . ./scripts/create-spree-app.sh
+
+  # BaT Buyer Client UI
+  APP_NAME=$(expand_var $APP_NAME_BAT_BUYER_UI)
+  . ./scripts/create-bat-client-app.sh
 fi
