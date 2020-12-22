@@ -32,12 +32,12 @@ if [[ $SCOPE =~ app|all ]]; then
   # Spree UI / service
   APP_NAME=$(expand_var $APP_NAME_SPREE_UI)
   SIDEKIQ=false
-  # . ./scripts/create-spree-app.sh
-
+  . ./scripts/create-spree-app.sh
+  
   # Spree Sidekiq
   APP_NAME=$(expand_var $APP_NAME_SPREE_SIDEKIQ)
   SIDEKIQ=true
-  # . ./scripts/create-spree-app.sh
+  . ./scripts/create-spree-app.sh
 
   # BaT Buyer Client UI
   APP_NAME=$(expand_var $APP_NAME_BAT_BUYER_UI)

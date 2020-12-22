@@ -16,11 +16,6 @@ cf create-service elasticsearch $SERVICE_PLAN_ES $(expand_var ${SERVICE_NAME_ES}
 cf create-service redis $SERVICE_PLAN_REDIS_CACHE $(expand_var ${SERVICE_NAME_REDIS_CACHE})
 cf create-service redis $SERVICE_PLAN_REDIS_SIDEKIQ $(expand_var ${SERVICE_NAME_REDIS_SIDEKIQ})
 
-###################
-# Memcached Service
-###################
-# TBD -https://docs.cloud.service.gov.uk/deploying_services/user_provided_services/#user-provided-backing-services?
-
 #############
 # S3 Services
 #############

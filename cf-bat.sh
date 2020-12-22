@@ -23,7 +23,7 @@ while getopts ":o:e:" o; do
             ORG=${OPTARG:='ccs-scale-bat'}
             ;;
         e)
-            ENV=${OPTARG}
+            export ENV=${OPTARG}
             ;;
         *)
             usage

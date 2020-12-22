@@ -14,15 +14,16 @@ cf add-network-policy $APP_NAME $(expand_var $APP_NAME_SPREE_UI) -s $SPACE -o $O
 # Bind to Services
 #######################
 # UPS
-cf bind-service $APP_NAME $(expand_var $UPS_NAME_GENERAL)
+cf bind-service $APP_NAME $(expand_var $UPS_NAME_GENERAL_CLIENT)
 cf bind-service $APP_NAME $(expand_var $UPS_NAME_ROLLBAR)
 cf bind-service $APP_NAME $(expand_var $UPS_NAME_LOGITIO)
+cf bind-service $APP_NAME $(expand_var $UPS_NAME_PAPERTRAIL)
 
 ##################################
 # Set Environment Variables in App
 ##################################
 
-cf set-env $APP_NAME SPREE_API_HOST "https://$(expand_var $APP_NAME_SPREE_UI).apps.internal"
+cf set-env $APP_NAME SPREE_API_HOST "http://$(expand_var $APP_NAME_SPREE_UI).apps.internal:3000"
 cf set-env $APP_NAME SPREE_IMAGE_HOST	"https://$(expand_var $APP_NAME_SPREE_UI).london.cloudapps.digital"
 
 # TODO: Improve the sed command to remove need to prefix with additional '{' char
@@ -47,7 +48,7 @@ cf set-env $APP_NAME SESSION_COOKIE_SECRET $(echo $VCAP_SERVICES | jq -r '."user
 
 # Static / miscellaneous
 cf set-env $APP_NAME DOCUMENTS_TERMS_AND_CONDITIONS_URL "https://www.crowncommercial.gov.uk/agreements/RM6147"
-cf set-env $APP_NAME PORT 8080
+# cf set-env $APP_NAME PORT 8080
 cf set-env $APP_NAME BASICAUTH_ENABLED "true"
 
 #######################

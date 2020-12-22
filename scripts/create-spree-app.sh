@@ -3,7 +3,7 @@
 #######################
 # Spree App
 #######################
-if [[ $SIDEKIQ ]]; then
+if [[ "$SIDEKIQ" = true ]]; then
   cf push -k $DISK_SPREE_SIDEKIQ -m $MEMORY_SPREE_SIDEKIQ -i $INSTANCES_SPREE_SIDEKIQ $APP_NAME \
     --docker-image $DOCKER_IMAGE_SPREE --docker-username $AWS_ECR_REPO_ACCESS_KEY_ID \
     -c "bundle exec sidekiq" --no-start --no-route -u process
@@ -40,6 +40,10 @@ cf bind-service $APP_NAME $(expand_var $UPS_NAME_NEWRELIC)
 
 # TODO: Improve the sed command to remove need to prefix with additional '{' char
 VCAP_SERVICES="{$(cf env $APP_NAME | sed -n '/^VCAP_SERVICES:/,/^$/{//!p;}')"
+
+echo "${VCAP_SERVICES}"
+echo "${ENV}"
+echo "${APP_NAME}"
 
 # S3 - Spree Images Bucket - TODO: SINF-224 Update to new env vars (commented lines)
 cf set-env $APP_NAME S3_BUCKET_NAME $(echo $VCAP_SERVICES | jq -r '."aws-s3-bucket"[] | select(.name == env.ENV + "-spree-images").credentials.bucket_name')
