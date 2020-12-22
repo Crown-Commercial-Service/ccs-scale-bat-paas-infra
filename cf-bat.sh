@@ -2,12 +2,20 @@
 #
 # CCS Scale BaT - GPaaS Cloud Foundry provisioning control script
 # Usage:
-# cf-bat apply|destroy [-o ] --space sandbox|development --scope bs|app|all
+# [SKIP_UPS=true] cf-bat.sh -o <ccs-scale-bat> -e <sbx1|sbx2|sbx3|sbx-spark|dev|int> <apply|destroy> <svcs|apps|all>
+#
+# SKIP_UPS (Skip User-provided services) can be set to true on subsequent backing service updates to avoid having to
+# re-enter all the values for each UPS
+#
+# e.g.
+# cf-bat.sh -o ccs-scale-bat -e sbx3 apply all
+# cf-bat.sh -o ccs-scale-bat -e sbx3 destroy apps
+# SKIPUPS=true cf-bat.sh -o ccs-scale-bat -e sbx3 apply svcs
 #
 
 set -meo pipefail
 
-usage() { echo "Usage: $0 [-o <ccs-scale-bat>] [-e <sandbox|development|int>] <apply|destroy> <svcs|apps|all>" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-o <ccs-scale-bat>] [-e <sbx1|sbx2|sbx3|sbx-spark|dev|int>] <apply|destroy> <svcs|apps|all>" 1>&2; exit 1; }
 
 get_environment_property () {
   cat ${ENV_PROPS} | grep -w "$1" | cut -d'=' -f2

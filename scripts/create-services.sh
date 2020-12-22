@@ -44,7 +44,8 @@ create_update_ups () {
   fi
 }
 
-if [[ $PROVISION_UPS ]]; then
+# Set env/shell variable SKIP_UPS=true to avoid re-running these commands
+if [[ "$SKIP_UPS" != true ]]; then
   NR_UPS_NAME=$(expand_var $UPS_NAME_NEWRELIC)
   NR_UPS_LABEL="New Relic"
   NR_PROPS="appname, license-key, enabled"
